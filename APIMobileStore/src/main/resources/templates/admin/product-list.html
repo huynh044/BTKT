@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" th:replace="~{layout/admin-layout :: content}">
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Quản lý sản phẩm</h2>
+        <a th:href="@{/admin/products/new}" class="btn btn-success btn-sm"><i class="fas fa-plus me-1"></i>Thêm sản phẩm</a>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form th:action="@{/admin/products}" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="search" placeholder="Tìm kiếm theo tên sản phẩm">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>Tìm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">Tên sản phẩm</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Ngày tạo</th>
+                <th scope="col" class="text-center">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${products.isEmpty()}">
+                <td colspan="5" class="text-center text-muted">Không có sản phẩm nào để hiển thị.</td>
+            </tr>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy')}"></td>
+                <td class="text-center">
+                    <a th:href="@{'/admin/products/' + ${product.id}}" class="btn btn-info btn-sm me-1" data-bs-toggle="tooltip" title="Xem chi tiết"><i class="fas fa-eye"></i></a>
+                    <a th:href="@{'/admin/products/' + ${product.id} + '/edit'}" class="btn btn-warning btn-sm me-1" data-bs-toggle="tooltip" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="'#deleteProductModal-' + ${product.id}" data-bs-toggle="tooltip" title="Xóa"><i class="fas fa-trash"></i></button>
+                    <!-- Delete Modal -->
+                    <div class="modal fade" th:id="'deleteProductModal-' + ${product.id}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Xác nhận xóa</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Bạn có chắc chắn muốn xóa sản phẩm <strong th:text="${product.name}"></strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <form th:action="@{'/admin/products/' + ${product.id} + '/delete'}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger">Xóa</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/products(page=${currentPage - 1})}">Trước</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/admin/products(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/products(page=${currentPage + 1})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" th:replace="~{layout/admin-layout :: content}">
+<div>
+    <h2 class="mb-4">Chỉnh sửa người dùng</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{'/admin/users/' + ${user.username} + '/edit'}" method="post" th:object="${user}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="username" class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="username" th:field="*{username}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" th:field="*{email}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="firstname" class="form-label">Họ</label>
+                        <input type="text" class="form-control" id="firstname" th:field="*{firstname}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastname" class="form-label">Tên</label>
+                        <input type="text" class="form-control" id="lastname" th:field="*{lastname}">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Vai trò</label>
+                        <div th:each="role : ${T(com.example.laptopwarehouse.entity.Role.RoleName).values()}" class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input" th:field="*{roles}" th:value="${role.name()}" th:id="'role-' + ${role.name()}">
+                            <label class="form-check-label" th:for="'role-' + ${role.name()}" th:text="${role.name()}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{'/admin/users/' + ${user.username}}" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Hủy</a>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save me-1"></i>Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</html>

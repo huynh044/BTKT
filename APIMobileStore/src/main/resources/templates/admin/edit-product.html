@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" th:replace="~{layout/admin-layout :: content}">
+<div>
+    <h2 class="mb-4">Chỉnh sửa sản phẩm</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{'/admin/products/' + ${product.id} + '/edit'}" method="post" th:object="${product}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">Tên sản phẩm</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="price" class="form-label">Giá</label>
+                        <input type="number" class="form-control" id="price" th:field="*{price}" step="0.01">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="quantity" class="form-label">Số lượng</label>
+                        <input type="number" class="form-control" id="quantity" th:field="*{quantity}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="createdAt" class="form-label">Ngày tạo</label>
+                        <input type="text" class="form-control" id="createdAt" th:field="*{createdAt}" readonly>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="description" class="form-label">Mô tả</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{'/admin/products/' + ${product.id}}" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Hủy</a>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save me-1"></i>Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</html>
