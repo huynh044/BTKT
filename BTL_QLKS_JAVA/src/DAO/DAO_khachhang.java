@@ -7,6 +7,9 @@ package DAO;
 
 import GUI.thongbao;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -149,4 +152,40 @@ public class DAO_khachhang {
         } else {
         }
     }
+    
+    public static void filterAllCustomerByGender(String gender, JTable table) {
+    DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+    tblModel.setRowCount(0); // Xóa dữ liệu cũ
+
+    Object[] obj = new Object[8];
+
+    // Lấy dữ liệu theo giới tính
+    String query = "SELECT * FROM KH WHERE gioitinh = '" + gender + "'";
+    ResultSet rs = connection.Getdata(query);
+
+    try {
+        while (rs.next()) {
+            obj[0] = tblModel.getRowCount(); // STT
+            obj[1] = rs.getInt("maKH");
+
+            // Lấy tên loại khách hàng
+            int maloai = rs.getInt("maloaiKH");
+            ResultSet rsLoai = DAO.DAO_khachhang.layloaitheoMa(maloai);
+            obj[2] = (rsLoai.next()) ? rsLoai.getString("tenloaiKH") : "";
+
+            obj[3] = rs.getString("tenKH");
+            obj[4] = rs.getInt("tuoi");
+            obj[5] = rs.getString("gioitinh");
+            obj[6] = rs.getString("sdt");
+            obj[7] = rs.getString("soCMND");
+
+            tblModel.addRow(obj);
+        }
+
+        if (rs != null) rs.close();
+    } catch (SQLException ex) {
+        thongbao.thongbao("Lỗi khi lọc khách hàng: " + ex.getMessage(), "Lỗi");
+    }
+}
+
 }

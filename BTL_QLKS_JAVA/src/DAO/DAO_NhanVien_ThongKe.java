@@ -69,35 +69,37 @@ public class DAO_NhanVien_ThongKe {
     }
     
     public void drawLuongNhanVienChart(JPanel chartPanel) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        String query = "SELECT tennhanvien, luong FROM nhanvien";
-        ResultSet rs = connection.Getdata(query);
+    // ✅ Lấy 10 nhân viên có lương cao nhất
+    String query = "SELECT tennhanvien, luong FROM nhanvien ORDER BY luong DESC LIMIT 5";
+    ResultSet rs = connection.Getdata(query);
 
-        try {
-            while (rs != null && rs.next()) {
-                String tenNV = rs.getString("tennhanvien");
-                double luong = rs.getDouble("luong");
-                dataset.addValue(luong, "Lương", tenNV);
-            }
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            thongbao.thongbao("Lỗi tạo dữ liệu biểu đồ: " + e.getMessage(), "Lỗi");
-            return;
+    try {
+        while (rs != null && rs.next()) {
+            String tenNV = rs.getString("tennhanvien");
+            double luong = rs.getDouble("luong");
+            dataset.addValue(luong, "Lương", tenNV);
         }
-
-        JFreeChart barChart = ChartFactory.createBarChart(
-                "Biểu Đồ Lương Nhân Viên",
-                "Tên Nhân Viên", "Lương (VND)",
-                dataset, PlotOrientation.VERTICAL,
-                true, true, false
-        );
-
-        ChartPanel chart = new ChartPanel(barChart);
-        chartPanel.removeAll();
-        chartPanel.setLayout(new java.awt.BorderLayout());
-        chartPanel.add(chart, java.awt.BorderLayout.CENTER);
-        chartPanel.revalidate();
-        chartPanel.repaint();
+        if (rs != null) rs.close();
+    } catch (SQLException e) {
+        thongbao.thongbao("Lỗi tạo dữ liệu biểu đồ: " + e.getMessage(), "Lỗi");
+        return;
     }
+
+    JFreeChart barChart = ChartFactory.createBarChart(
+            "Top 5 Nhân Viên Lương Cao Nhất",
+            "Tên Nhân Viên", "Lương (VND)",
+            dataset, PlotOrientation.VERTICAL,
+            true, true, false
+    );
+
+    ChartPanel chart = new ChartPanel(barChart);
+    chartPanel.removeAll();
+    chartPanel.setLayout(new java.awt.BorderLayout());
+    chartPanel.add(chart, java.awt.BorderLayout.CENTER);
+    chartPanel.revalidate();
+    chartPanel.repaint();
+}
+
 }

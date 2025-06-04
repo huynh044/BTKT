@@ -15,38 +15,27 @@ import java.sql.ResultSet;
 public class DAO_nhanvien {
 
     public static ResultSet laydulieuNV() {
-        String cautruyvan = "SELECT `manhanvien`, "
-                + "      `tennhanvien`, "
-                + "      `gioitinh`, "
-                + "      `ngaysinh`, "
-                + "      `sdt`, "
-                + "      `ngaylam`, "
-                + "      `luong`, "
-                + "      `diachi`, "
-                + "      `ghichu` "
-                + "  FROM `nhanvien`";
+        String cautruyvan = "SELECT * "+ "  FROM `nhanvien`";
         return connection.Getdata(cautruyvan);
     }
 
     public static void themNV(DTO.DTO_NV nv) {
-        String cautruyvan = "INSERT INTO `nhanvien` "
-                + "           (`tennhanvien`, "
-                + "           `gioitinh`, "
-                + "           `ngaysinh`, "
-                + "           `sdt`, "
-                + "           `ngaylam`, "
-                + "           `luong`, "
-                + "           `diachi`, "
-                + "           `ghichu`) "
-                + "     VALUES "
-                + "           (N'" + nv.getTen() + "' "
-                + "           ,N'" + nv.getGioitinh() + "' "
-                + "           ,'" + nv.getNgaysinh() + "' "
-                + "           ,'" + nv.getSdt() + "' "
-                + "           ,'" + nv.getNgaylam() + "' "
-                + "           , " + nv.getLuong()
-                + "           ,N'" + nv.getDiachi() + "' "
-                + "           ,N'" + nv.getGhichu() + "')";
+        String ten = nv.getTen().replace("'", "''");
+String diachi = nv.getDiachi().replace("'", "''");
+String ghichu = nv.getGhichu().replace("'", "''");
+String bangcap = nv.getBangCap().replace("'", "''");
+
+String cautruyvan = "INSERT INTO `nhanvien` "
+    + "(`tennhanvien`, `gioitinh`, `ngaysinh`, `sdt`, `ngaylam`, `luong`, `diachi`, `ghichu`, `BangCap`) VALUES ("
+    + "N'" + ten + "', "
+    + "N'" + nv.getGioitinh() + "', "
+    + "'" + nv.getNgaysinh() + "', "
+    + "'" + nv.getSdt() + "', "
+    + "'" + nv.getNgaylam() + "', "
+    + nv.getLuong() + ", "
+    + "N'" + diachi + "', "
+    + "N'" + ghichu + "',"
+    + "N'" + bangcap+"')";
         int kq = connection.ExecuteTruyVan(cautruyvan);
         if (kq > 0) {
             thongbao.thongbao("THêm thành công", "thông báo");
@@ -74,6 +63,7 @@ public class DAO_nhanvien {
                 + "      ,`luong` = " + nv_sua.getLuong()
                 + "      ,`diachi` = N'" + nv_sua.getDiachi() + "' "
                 + "      ,`ghichu` = N'" + nv_sua.getGhichu() + "' "
+                + "      ,`BangCap` = N'" + nv_sua.getBangCap()+"' "
                 + " WHERE `manhanvien` = " + maNV;
         int kq = connection.ExecuteTruyVan(cautruyvan);
         if (kq > 0) {
@@ -83,15 +73,7 @@ public class DAO_nhanvien {
     }
 
     public static ResultSet timkiemNV(String tuKhoa) {
-        String cautruyvan = "SELECT `manhanvien`, "
-                + "      `tennhanvien`, "
-                + "      `gioitinh`, "
-                + "      `ngaysinh`, "
-                + "      `sdt`, "
-                + "      `ngaylam`, "
-                + "      `luong`, "
-                + "      `diachi`, "
-                + "      `ghichu` "
+        String cautruyvan = "SELECT * "
                 + "  FROM `nhanvien` "
                 + "  WHERE `tennhanvien` LIKE N'%" + tuKhoa + "%' "
                 + "  OR `sdt` LIKE '%" + tuKhoa + "%' "

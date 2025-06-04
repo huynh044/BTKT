@@ -21,6 +21,15 @@ public class DTO_NV {
     double luong;
     String diachi;
     String ghichu;
+    String bangcap;
+    
+    public String getBangCap(){
+        return bangcap;
+    }
+    
+    public void setBangCap(String bangcap){
+        this.bangcap = bangcap;
+    }
 
     public int getMaNV() {
         return maNV;

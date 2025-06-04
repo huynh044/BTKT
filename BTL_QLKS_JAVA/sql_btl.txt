@@ -1,0 +1,81 @@
+-- Tạo cơ sở dữ liệu
+CREATE DATABASE IF NOT EXISTS QL_khachsan;
+USE QL_khachsan;
+
+-- Bảng loại khách hàng
+CREATE TABLE loaiKH (
+    maloaiKH INT AUTO_INCREMENT PRIMARY KEY,
+    tenloaiKH NVARCHAR(50) NOT NULL,
+    mota NVARCHAR(255)
+);
+
+-- Bảng khách hàng
+CREATE TABLE KH (
+    maKH INT AUTO_INCREMENT PRIMARY KEY,
+    maloaiKH INT NOT NULL,
+    tenKH NVARCHAR(50) NOT NULL,
+    tuoi INT,
+    gioitinh NVARCHAR(10),
+    sdt CHAR(10),
+    soCMND CHAR(12),
+    ghichu NVARCHAR(255),
+    FOREIGN KEY (maloaiKH) REFERENCES loaiKH(maloaiKH)
+);
+
+-- Bảng loại phòng
+CREATE TABLE loaiphong (
+    maloaiphong INT AUTO_INCREMENT PRIMARY KEY,
+    tenloaiphong NVARCHAR(50) NOT NULL,
+    mota NVARCHAR(255)
+);
+
+-- Bảng phòng
+CREATE TABLE phong (
+    maphong INT AUTO_INCREMENT PRIMARY KEY,
+    tenphong NVARCHAR(50),
+    dientich INT,
+    gia DECIMAL(10, 2),
+    trangthai NVARCHAR(50),
+    ghichu NVARCHAR(255),
+    maloaiphong INT,
+    FOREIGN KEY (maloaiphong) REFERENCES loaiphong(maloaiphong)
+);
+
+-- Bảng nhân viên
+CREATE TABLE nhanvien (
+    manhanvien INT AUTO_INCREMENT PRIMARY KEY,
+    tennhanvien NVARCHAR(50) NOT NULL,
+    gioitinh NVARCHAR(10),
+    ngaysinh DATE,
+    sdt CHAR(10),
+    ngaylam DATE NOT NULL,
+    luong DECIMAL(10, 2) NOT NULL,
+    diachi NVARCHAR(255),
+    bangcap NVARCHAR(255),	
+    ghichu NVARCHAR(255)
+);
+
+-- Bảng phiếu thuê
+CREATE TABLE phieuthue (
+    maphieuThue INT AUTO_INCREMENT PRIMARY KEY,
+    maphong INT,
+    manhanvien INT,
+    maKH INT,
+    ngaythue DATE,
+    soNgaythue INT,
+    FOREIGN KEY (maphong) REFERENCES phong(maphong),
+    FOREIGN KEY (manhanvien) REFERENCES nhanvien(manhanvien),
+    FOREIGN KEY (maKH) REFERENCES KH(maKH)
+);
+
+-- Bảng người dùng
+CREATE TABLE user (
+    mauser INT AUTO_INCREMENT PRIMARY KEY,
+    tenuser NVARCHAR(50) NOT NULL UNIQUE,
+    password NVARCHAR(255) NOT NULL,
+    ngaylap DATE DEFAULT CURRENT_DATE,
+    ghichu NVARCHAR(255),
+    role NVARCHAR(50) DEFAULT 'none',
+    hovaten NVARCHAR(50),
+    email NVARCHAR(100)
+);

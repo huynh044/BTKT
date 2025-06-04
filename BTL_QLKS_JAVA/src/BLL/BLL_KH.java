@@ -19,7 +19,7 @@ public class BLL_KH {
             return false;
 
         }
-        if (kh.getTuoi() < 0) {
+        if (kh.getTuoi() < 18) {
             thongbao.thongbao("sai tuổi", "thông báo");
             return false;
 
@@ -27,7 +27,7 @@ public class BLL_KH {
        String sdttest = "[0-9]{10}";
         String cmndtest = "[0-9]{12}";
         if (!kh.getSdt().matches(sdttest)) {
-            thongbao.thongbao("nhập số vào sdt", "thông báo");
+            thongbao.thongbao("Phải nhập bằng số và đủ 12 số", "thông báo");
             return false;
 
         }

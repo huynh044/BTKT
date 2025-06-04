@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import DAO.DAO_phieuthue;
 import DTO.DTO_phieuthue;
 import DTO.DTO_phong;
 import java.io.File;
@@ -34,8 +35,16 @@ public class GUI_phieuThue extends javax.swing.JFrame {
     /**
      * Creates new form GUI_phieuThue
      */
+    DAO_phieuthue daoPhieuThue;
+    String tenPhong;
+    public GUI_phieuThue(String tenPhong){
+        initComponents();
+        this.tenPhong = tenPhong;
+        daoPhieuThue = new DAO_phieuthue();
+    }
     public GUI_phieuThue() {
         initComponents();
+        daoPhieuThue = new DAO_phieuthue();
     }
     public static LocalDate date = java.time.LocalDate.now();
 
@@ -56,7 +65,6 @@ public class GUI_phieuThue extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         lbl_tenphong = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        lbl_tennhanvien = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         lbl_giaphong = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -71,9 +79,14 @@ public class GUI_phieuThue extends javax.swing.JFrame {
         spn_songay = new javax.swing.JSpinner();
         lbl_maNV = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        lbl_ngaythue = new javax.swing.JLabel();
-        btn_thue = new javax.swing.JButton();
         btn_hoanthanh1 = new javax.swing.JButton();
+        btn_thue = new javax.swing.JButton();
+        lbl_ngaythue = new com.toedter.calendar.JDateChooser();
+        jLabel12 = new javax.swing.JLabel();
+        manhanvien = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
+        maKHComboBox = new javax.swing.JComboBox<>();
+        lbl_tennhanvien = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("PHiếu thuê");
@@ -93,13 +106,12 @@ public class GUI_phieuThue extends javax.swing.JFrame {
 
         btn_hoanthanh.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btn_hoanthanh.setText("In Phiếu");
-        btn_hoanthanh.setEnabled(false);
         btn_hoanthanh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_hoanthanhActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_hoanthanh, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 640, -1, 44));
+        jPanel1.add(btn_hoanthanh, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 480, -1, 44));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         jLabel2.setText("Mã phòng:");
@@ -116,54 +128,55 @@ public class GUI_phieuThue extends javax.swing.JFrame {
         lbl_tenphong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.add(lbl_tenphong, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, 135, 30));
 
-        jLabel4.setText("Tên người dùng:");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 124, -1, -1));
-
-        lbl_tennhanvien.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(lbl_tennhanvien, new org.netbeans.lib.awtextra.AbsoluteConstraints(167, 120, 213, 30));
+        jLabel4.setText("Tên Nhân Viên");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 120, -1, -1));
 
         jLabel5.setText("Giá phòng:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 191, -1, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 160, -1, -1));
 
         lbl_giaphong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(lbl_giaphong, new org.netbeans.lib.awtextra.AbsoluteConstraints(167, 191, 140, 23));
+        jPanel1.add(lbl_giaphong, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, 220, 30));
 
         jLabel6.setText("Tên khách thuê:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 264, -1, -1));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 230, -1, -1));
 
         txt_tenKH.setEnabled(false);
-        jPanel1.add(txt_tenKH, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 261, 218, -1));
+        jPanel1.add(txt_tenKH, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, 218, -1));
 
         jLabel7.setText("Tuổi:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 330, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, -1, -1));
 
         spn_tuoi.setEnabled(false);
-        jPanel1.add(spn_tuoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 327, 71, -1));
+        jPanel1.add(spn_tuoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 260, 71, -1));
 
         jLabel8.setText("Số điện thoại:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 395, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 300, -1, -1));
 
         jLabel9.setText("Số CMND:");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 456, -1, -1));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 340, -1, -1));
 
         txt_sdt.setEnabled(false);
-        jPanel1.add(txt_sdt, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 392, 218, -1));
+        jPanel1.add(txt_sdt, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 300, 218, -1));
 
         txt_CMND.setEnabled(false);
-        jPanel1.add(txt_CMND, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 453, 218, -1));
+        jPanel1.add(txt_CMND, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 340, 218, -1));
 
         jLabel10.setText("Số ngày thuê:");
-        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 594, -1, -1));
-
-        spn_songay.setEnabled(false);
-        jPanel1.add(spn_songay, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 591, 69, -1));
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 430, -1, -1));
+        jPanel1.add(spn_songay, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 430, 69, -1));
         jPanel1.add(lbl_maNV, new org.netbeans.lib.awtextra.AbsoluteConstraints(433, 120, 85, 20));
 
         jLabel11.setText("Ngày thuê:");
-        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 523, -1, -1));
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 390, -1, -1));
 
-        lbl_ngaythue.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(lbl_ngaythue, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 515, 218, 24));
+        btn_hoanthanh1.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        btn_hoanthanh1.setText("Hoàn thành");
+        btn_hoanthanh1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_hoanthanh1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btn_hoanthanh1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 480, -1, 44));
 
         btn_thue.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btn_thue.setText("Thuê");
@@ -173,38 +186,58 @@ public class GUI_phieuThue extends javax.swing.JFrame {
                 btn_thueActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_thue, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 640, 82, 44));
+        jPanel1.add(btn_thue, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 480, 82, 44));
+        jPanel1.add(lbl_ngaythue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 390, 230, -1));
 
-        btn_hoanthanh1.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        btn_hoanthanh1.setText("Hoàn thành");
-        btn_hoanthanh1.setEnabled(false);
-        btn_hoanthanh1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_hoanthanh1ActionPerformed(evt);
+        jLabel12.setText("Mã NV");
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 90, -1, -1));
+
+        manhanvien.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        manhanvien.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                manhanvienItemStateChanged(evt);
             }
         });
-        jPanel1.add(btn_hoanthanh1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 640, -1, 44));
+        manhanvien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manhanvienActionPerformed(evt);
+            }
+        });
+        jPanel1.add(manhanvien, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 100, -1));
+
+        jLabel13.setText("Mã KH");
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 200, -1, -1));
+
+        maKHComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        maKHComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maKHComboBoxActionPerformed(evt);
+            }
+        });
+        jPanel1.add(maKHComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 200, 100, -1));
+        jPanel1.add(lbl_tennhanvien, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 220, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(216, 216, 216)
-                .addComponent(jLabel1)
-                .addContainerGap(239, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(210, 210, 210)
+                        .addComponent(jLabel1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(7, 7, 7)
+                .addGap(13, 13, 13)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -213,6 +246,8 @@ public class GUI_phieuThue extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        daoPhieuThue.getAllIdOfNhanVien(manhanvien);
+        daoPhieuThue.getAllOfMaKHID(maKHComboBox);
         if (GUI.GUI_phong.trangthai.equals("dangthue")) {
             spn_songay.setEnabled(true);
             btn_hoanthanh.setEnabled(true);
@@ -223,19 +258,24 @@ public class GUI_phieuThue extends javax.swing.JFrame {
             spn_tuoi.setEnabled(true);
             btn_thue.setEnabled(true);
         }
+        
+        if (!tenPhong.isEmpty()){
+            lbl_tenphong.setText(tenPhong);
+            daoPhieuThue.getInfoPhongByTenPhong(tenPhong, lbl_maphong, lbl_giaphong);
+        }
 
         ResultSet rs = DAO.DAO_phong.laydulieu_Theoten(GUI.GUI_phong.tenPhong);
-//        DTO.DTO_phong phong=new DTO_phong();
-//        try {
-//            if (rs.next()) {
-//                phong.setMaphong(rs.getInt("maphong"));
-//                phong.setTenPhong(rs.getString("tenphong"));
-//                phong.setDientich(rs.getInt("dientich"));
-//                phong.setGia(rs.getInt("gia"));
-//            }
-//        } catch (SQLException ex) {
-//           thongbao.thongbao("", "");
-//        }
+        DTO.DTO_phong phong=new DTO_phong();
+        try {
+            if (rs.next()) {
+                phong.setMaphong(rs.getInt("maphong"));
+                phong.setTenPhong(rs.getString("tenphong"));
+                phong.setDientich(rs.getInt("dientich"));
+                phong.setGia(rs.getInt("gia"));
+            }
+        } catch (SQLException ex) {
+           thongbao.thongbao("", "");
+        }
         try {
             if (rs.next()) {
                 lbl_maphong.setText(rs.getString("maphong"));
@@ -246,33 +286,37 @@ public class GUI_phieuThue extends javax.swing.JFrame {
             thongbao.thongbao("lỗi đổ dữ liệu", "thông báo");
         }
         lbl_tennhanvien.setText(BLL.BLL_dangnhap.hovaten);
-        lbl_ngaythue.setText(date.toString());
+        lbl_ngaythue.setDate(new Date());
+        
+        
 
     }//GEN-LAST:event_formWindowOpened
 
     private void btn_thueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_thueActionPerformed
         DTO.DTO_phieuthue pt = new DTO_phieuthue();
-        try {
+        
+        if (Integer.parseInt(spn_tuoi.getValue().toString()) >= 20){
             pt.setMaphong(Integer.parseInt(lbl_maphong.getText()));
-            
-            pt.setTenphong(lbl_tenphong.getText());
-           
-            pt.setTenuser(lbl_tennhanvien.getText());
-           
-            pt.setGiaphong(Double.parseDouble(lbl_giaphong.getText()));
-           
-            pt.setTenKH(txt_tenKH.getText());
+        pt.setTenphong(lbl_tenphong.getText());
+        pt.setTenuser(lbl_tennhanvien.getText());
+        pt.setGiaphong(Double.parseDouble(lbl_giaphong.getText()));
+        pt.setTenKH(txt_tenKH.getText());
             pt.setTuoi(Integer.parseInt(spn_tuoi.getValue().toString()));
             pt.setSdt(txt_sdt.getText());
-            pt.setCMND(txt_CMND.getText());
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
-
-            pt.setNgaythue(formatter.parse(lbl_ngaythue.getText()));
-        } catch (ParseException ex) {
-            thongbao.thongbao("lỗi", "");
-        }
+        pt.setCMND(txt_CMND.getText());
+        pt.setNgaythue(lbl_ngaythue.getDate());
+        pt.setSongaythue(Integer.parseInt(spn_songay.getValue().toString()));
         DAO.DAO_phieuthue.them(pt);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Đủ 20 tuổi mới được thuê phòng");
+        }
+        
+        if(Integer.parseInt(spn_songay.getValue().toString())<=0){
+            JOptionPane.showMessageDialog(this, "Số ngày thuê không được dưới hoặc bằng 0");
+        }
+        
+        
 
     }//GEN-LAST:event_btn_thueActionPerformed
 
@@ -305,7 +349,9 @@ public class GUI_phieuThue extends javax.swing.JFrame {
         rowIndex = createRow(sheet, rowIndex, "Tuổi", spn_tuoi.getValue().toString());
         rowIndex = createRow(sheet, rowIndex, "Số điện thoại", txt_sdt.getText());
         rowIndex = createRow(sheet, rowIndex, "Số CMND", txt_CMND.getText());
-        rowIndex = createRow(sheet, rowIndex, "Ngày thuê", lbl_ngaythue.getText());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        rowIndex = createRow(sheet, rowIndex, "Ngày thuê", sdf.format(lbl_ngaythue.getDate()));
+
         rowIndex = createRow(sheet, rowIndex, "Số ngày thuê", spn_songay.getValue().toString());
 
         // Ghi file
@@ -328,6 +374,32 @@ public class GUI_phieuThue extends javax.swing.JFrame {
     private void btn_hoanthanh1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hoanthanh1ActionPerformed
         this.dispose();
     }//GEN-LAST:event_btn_hoanthanh1ActionPerformed
+
+    private void manhanvienItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manhanvienItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_manhanvienItemStateChanged
+
+    private void manhanvienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manhanvienActionPerformed
+        if (manhanvien.getSelectedItem() != null) {
+            try {
+                int id = Integer.parseInt(manhanvien.getSelectedItem().toString());
+                daoPhieuThue.getTenNhanVienByID(id, lbl_tennhanvien); // Gọi hàm đã viết
+            } catch (NumberFormatException ex) {
+                thongbao.thongbao("Mã nhân viên không hợp lệ", "Lỗi");
+            }
+        }
+    }//GEN-LAST:event_manhanvienActionPerformed
+
+    private void maKHComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maKHComboBoxActionPerformed
+        if (maKHComboBox.getSelectedItem() != null) {
+            try {
+                int id = Integer.parseInt(maKHComboBox.getSelectedItem().toString());
+                daoPhieuThue.getInfoByMaKHID(id, txt_tenKH, txt_sdt, txt_CMND); // Gọi hàm đã viết
+            } catch (NumberFormatException ex) {
+                thongbao.thongbao("Mã nhân viên không hợp lệ", "Lỗi");
+            }
+        }
+    }//GEN-LAST:event_maKHComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -372,6 +444,8 @@ public class GUI_phieuThue extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -384,9 +458,11 @@ public class GUI_phieuThue extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_giaphong;
     private javax.swing.JLabel lbl_maNV;
     private javax.swing.JLabel lbl_maphong;
-    private javax.swing.JLabel lbl_ngaythue;
-    private javax.swing.JLabel lbl_tennhanvien;
+    private com.toedter.calendar.JDateChooser lbl_ngaythue;
+    private javax.swing.JTextField lbl_tennhanvien;
     private javax.swing.JLabel lbl_tenphong;
+    private javax.swing.JComboBox<String> maKHComboBox;
+    private javax.swing.JComboBox<String> manhanvien;
     private javax.swing.JSpinner spn_songay;
     private javax.swing.JSpinner spn_tuoi;
     private javax.swing.JTextField txt_CMND;

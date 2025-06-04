@@ -18,99 +18,102 @@ public class DAO_DoanhThu {
     private static final DecimalFormat df = new DecimalFormat("#,### VND");
 
     // Hiển thị dữ liệu trong JTable theo tháng và năm
-    public void viewDataInTableByTime(String month, String year, JTable table) {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Mã Phiếu Thuê");
-        model.addColumn("Tên Phòng");
-        model.addColumn("Tên Khách Hàng");
-        model.addColumn("Ngày Thuê");
-        model.addColumn("Số Ngày Thuê");
-        model.addColumn("Giá Phòng");
-        model.addColumn("Thành Tiền");
+   public void viewDataInTableByDateRange(String from, String to, JTable table) {
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("Mã Phiếu Thuê");
+    model.addColumn("Tên Phòng");
+    model.addColumn("Tên Khách Hàng");
+    model.addColumn("Ngày Thuê");
+    model.addColumn("Số Ngày Thuê");
+    model.addColumn("Giá Phòng");
+    model.addColumn("Thành Tiền");
 
-        String query = "SELECT maphieuThue, tenphong, tenKH, ngaythue, soNgaythue, giaPhong " +
-                       "FROM `phieuthue` " +
-                       "WHERE MONTH(ngaythue) = " + month + " AND YEAR(ngaythue) = " + year;
+    String query = "SELECT maphieuThue, tenphong, tenKH, ngaythue, soNgaythue, giaPhong " +
+                   "FROM phieuthue " +
+                   "WHERE ngaythue BETWEEN '" + from + "' AND '" + to + "'";
 
-        ResultSet rs = connection.Getdata(query);
-        try {
-            while (rs != null && rs.next()) {
-                int maphieuThue = rs.getInt("maphieuThue");
-                String tenphong = rs.getString("tenphong");
-                String tenKH = rs.getString("tenKH");
-                String ngaythue = rs.getDate("ngaythue").toString();
-                Integer soNgaythue = rs.getInt("soNgaythue");
-                double giaPhong = rs.getDouble("giaPhong");
-                double thanhTien = (soNgaythue != null ? soNgaythue : 0) * giaPhong;
+    ResultSet rs = connection.Getdata(query);
+    try {
+        while (rs.next()) {
+            int soNgay = rs.getInt("soNgaythue");
+            double gia = rs.getDouble("giaPhong");
+            double thanhTien = soNgay * gia;
 
-                model.addRow(new Object[]{maphieuThue, tenphong, tenKH, ngaythue,
-                        soNgaythue, df.format(giaPhong), df.format(thanhTien)});
-            }
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            thongbao.thongbao("Lỗi truy vấn dữ liệu: " + e.getMessage(), "Lỗi");
+            model.addRow(new Object[]{
+                rs.getInt("maphieuThue"),
+                rs.getString("tenphong"),
+                rs.getString("tenKH"),
+                rs.getDate("ngaythue").toString(),
+                soNgay,
+                df.format(gia),
+                df.format(thanhTien)
+            });
         }
-        table.setModel(model);
+        rs.close();
+    } catch (SQLException e) {
+        thongbao.thongbao("Lỗi truy vấn dữ liệu: " + e.getMessage(), "Lỗi");
     }
+
+    table.setModel(model);
+}
+
 
     // Tính tổng doanh thu và hiển thị trong JTextField
-    public void calculateTotalPrice(String month, String year, JTextField price) {
-        double total = 0;
-        String query = "SELECT giaPhong, soNgaythue " +
-                       "FROM `phieuthue` " +
-                       "WHERE MONTH(ngaythue) = " + month + " AND YEAR(ngaythue) = " + year;
+    public void calculateTotalPriceByDateRange(String from, String to, JTextField price) {
+    double total = 0;
+    String query = "SELECT giaPhong, soNgaythue FROM phieuthue " +
+                   "WHERE ngaythue BETWEEN '" + from + "' AND '" + to + "'";
 
-        ResultSet rs = connection.Getdata(query);
-        try {
-            while (rs != null && rs.next()) {
-                double giaPhong = rs.getDouble("giaPhong");
-                Integer soNgaythue = rs.getInt("soNgaythue");
-                total += (soNgaythue != null ? soNgaythue : 0) * giaPhong;
-            }
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            thongbao.thongbao("Lỗi tính tổng doanh thu: " + e.getMessage(), "Lỗi");
+    ResultSet rs = connection.Getdata(query);
+    try {
+        while (rs != null && rs.next()) {
+            double giaPhong = rs.getDouble("giaPhong");
+            int soNgaythue = rs.getInt("soNgaythue");
+            total += soNgaythue * giaPhong;
         }
-        price.setText(df.format(total));
+        if (rs != null) rs.close();
+    } catch (SQLException e) {
+        thongbao.thongbao("Lỗi tính tổng doanh thu: " + e.getMessage(), "Lỗi");
     }
+    price.setText(df.format(total));
+}
+
 
     // Vẽ biểu đồ đường (Line Chart) sử dụng JFreeChart
-    public void viewDataInLineChart(String month, String year, JPanel chartPanel) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        String query = "SELECT DAY(ngaythue) as day, giaPhong, soNgaythue " +
-                       "FROM `phieuthue` " +
-                       "WHERE MONTH(ngaythue) = " + month + " AND YEAR(ngaythue) = " + year +
-                       " ORDER BY day";
+    public void viewDataInLineChartByDateRange(String from, String to, JPanel chartPanel) {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    String query = "SELECT DATE(ngaythue) AS ngay, giaPhong, soNgaythue FROM phieuthue " +
+                   "WHERE ngaythue BETWEEN '" + from + "' AND '" + to + "' ORDER BY ngay";
 
-        ResultSet rs = connection.Getdata(query);
-        try {
-            while (rs != null && rs.next()) {
-                int day = rs.getInt("day");
-                double giaPhong = rs.getDouble("giaPhong");
-                Integer soNgaythue = rs.getInt("soNgaythue");
-                double doanhThu = (soNgaythue != null ? soNgaythue : 0) * giaPhong;
-                dataset.addValue(doanhThu, "Doanh Thu", String.valueOf(day));
-            }
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            thongbao.thongbao("Lỗi tạo biểu đồ: " + e.getMessage(), "Lỗi");
+    ResultSet rs = connection.Getdata(query);
+    try {
+        while (rs != null && rs.next()) {
+            String ngay = rs.getDate("ngay").toString(); // yyyy-MM-dd
+            double giaPhong = rs.getDouble("giaPhong");
+            int soNgaythue = rs.getInt("soNgaythue");
+            double doanhThu = soNgaythue * giaPhong;
+            dataset.addValue(doanhThu, "Doanh Thu", ngay);
         }
-
-        // Tạo biểu đồ đường
-        JFreeChart lineChart = ChartFactory.createLineChart(
-                "Doanh Thu Theo Ngày - Tháng " + month + "/" + year,
-                "Ngày", "Doanh Thu (VND)", dataset, PlotOrientation.VERTICAL,
-                true, true, false
-        );
-
-        // Thêm biểu đồ vào ChartPanel
-        ChartPanel chart = new ChartPanel(lineChart);
-        chartPanel.removeAll();
-        chartPanel.setLayout(new java.awt.BorderLayout());
-        chartPanel.add(chart, java.awt.BorderLayout.CENTER);
-        chartPanel.revalidate();
-        chartPanel.repaint();
+        if (rs != null) rs.close();
+    } catch (SQLException e) {
+        thongbao.thongbao("Lỗi tạo biểu đồ: " + e.getMessage(), "Lỗi");
     }
+
+    // Tạo biểu đồ
+    JFreeChart lineChart = ChartFactory.createLineChart(
+            "Doanh Thu Từ " + from + " đến " + to,
+            "Ngày", "Doanh Thu (VND)", dataset, PlotOrientation.VERTICAL,
+            true, true, false
+    );
+
+    ChartPanel chart = new ChartPanel(lineChart);
+    chartPanel.removeAll();
+    chartPanel.setLayout(new java.awt.BorderLayout());
+    chartPanel.add(chart, java.awt.BorderLayout.CENTER);
+    chartPanel.revalidate();
+    chartPanel.repaint();
+}
+
     
     public void viewDataDefault(JTable table, JPanel chartLine) {
         // Khởi tạo mô hình bảng

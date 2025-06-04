@@ -58,6 +58,8 @@ public class GUI_khachhang extends javax.swing.JFrame {
         cbb_loaiKH = new javax.swing.JComboBox<>();
         txt_timkiem = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Khách hàng");
@@ -177,6 +179,17 @@ public class GUI_khachhang extends javax.swing.JFrame {
         jLabel8.setText("Tìm kiếm");
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 414, -1, 22));
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam", "Nữ", " " }));
+        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 410, 90, 30));
+
+        jButton3.setText("Lọc");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 410, -1, 30));
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
@@ -214,23 +227,49 @@ public class GUI_khachhang extends javax.swing.JFrame {
         if (dongchon == 1) {
             btn_sua.setEnabled(true);
             int vitri = tbl_KH.getSelectedRow();
-            txt_ten.setText(tbl_KH.getValueAt(vitri, 3).toString());
-            spn_tuoi.setValue(tbl_KH.getValueAt(vitri, 4));
-            cbb_gioitinh.setSelectedItem(tbl_KH.getValueAt(vitri, 5));
-            txt_sdt.setText(tbl_KH.getValueAt(vitri, 6).toString());
-            txt_cmnd.setText(tbl_KH.getValueAt(vitri, 7).toString());
 
-            DefaultComboBoxModel cbbModel = (DefaultComboBoxModel) cbb_loaiKH.getModel();
-            for (int i = 0; i < cbb_loaiKH.getItemCount(); i++) {
-                DTO.mycombobox mb = (mycombobox) cbbModel.getElementAt(i);
-                String tenLoai = mb.text.toString();
-                if (tenLoai.equals(tbl_KH.getValueAt(vitri, 2))) {
-                    cbb_loaiKH.setSelectedIndex(i);
+            // Gán tên
+            Object tenKHVal = tbl_KH.getValueAt(vitri, 3);
+            txt_ten.setText(tenKHVal != null ? tenKHVal.toString() : "");
+
+            // Gán tuổi cho Spinner (phải ép int và kiểm tra null)
+            Object tuoiVal = tbl_KH.getValueAt(vitri, 4);
+            try {
+                int tuoi = (tuoiVal != null) ? Integer.parseInt(tuoiVal.toString()) : 18;
+                spn_tuoi.setValue(tuoi);
+            } catch (Exception e) {
+                spn_tuoi.setValue(18); // fallback an toàn
+            }
+
+            // Gán giới tính
+            Object gtVal = tbl_KH.getValueAt(vitri, 5);
+            cbb_gioitinh.setSelectedItem(gtVal != null ? gtVal.toString() : "");
+
+            // Gán số điện thoại
+            Object sdtVal = tbl_KH.getValueAt(vitri, 6);
+            txt_sdt.setText(sdtVal != null ? sdtVal.toString() : "");
+
+            // Gán CMND
+            Object cmndVal = tbl_KH.getValueAt(vitri, 7);
+            txt_cmnd.setText(cmndVal != null ? cmndVal.toString() : "");
+
+            // Chọn loại khách hàng từ ComboBox
+            Object loaiKHVal = tbl_KH.getValueAt(vitri, 2); // cột loại KH
+            if (loaiKHVal != null) {
+                String tenLoaiKH = loaiKHVal.toString();
+                DefaultComboBoxModel cbbModel = (DefaultComboBoxModel) cbb_loaiKH.getModel();
+                for (int i = 0; i < cbb_loaiKH.getItemCount(); i++) {
+                    DTO.mycombobox mb = (mycombobox) cbbModel.getElementAt(i);
+                    if (mb.text.toString().equals(tenLoaiKH)) {
+                        cbb_loaiKH.setSelectedIndex(i);
+                        break;
+                    }
                 }
             }
         } else {
             btn_sua.setEnabled(false);
         }
+
     }//GEN-LAST:event_tbl_KHMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -276,6 +315,11 @@ public class GUI_khachhang extends javax.swing.JFrame {
       BLL.BLL_dodulieuKH.dodulieuTimKiem(tbl_KH, tuKhoa);
     }//GEN-LAST:event_txt_timkiemKeyReleased
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String gender = jComboBox1.getSelectedItem().toString();
+        DAO.DAO_khachhang.filterAllCustomerByGender(gender, tbl_KH);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -314,16 +358,19 @@ public class GUI_khachhang extends javax.swing.JFrame {
     private void loadData_loaiKH() {
         DefaultComboBoxModel cbbModel = (DefaultComboBoxModel) cbb_loaiKH.getModel();
         cbbModel.removeAllElements();
+
         ResultSet rs = DAO.DAO_khachhang.loaiKH();
         try {
             while (rs.next()) {
-                Object tenLoai = rs.getString("tenloaiKH");
-                Object maLoai = rs.getInt("maloaiKH");
-                DTO.mycombobox mb = new mycombobox(maLoai, tenLoai);
+                int maLoai = rs.getInt("maloaiKH");
+                String tenLoai = rs.getString("tenloaiKH");
+
+                mycombobox mb = new mycombobox(maLoai, tenLoai);
                 cbbModel.addElement(mb);
             }
         } catch (SQLException ex) {
-
+            ex.printStackTrace();
+            thongbao.thongbao("Lỗi khi tải loại khách hàng: " + ex.getMessage(), "Lỗi");
         }
     }
 
@@ -333,6 +380,8 @@ public class GUI_khachhang extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbb_loaiKH;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

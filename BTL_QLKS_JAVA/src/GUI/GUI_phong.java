@@ -76,7 +76,7 @@ public class GUI_phong extends javax.swing.JFrame {
         });
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
-        jButton1.setText("Hoàn thành");
+        jButton1.setText("Thoát");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -138,23 +138,14 @@ public class GUI_phong extends javax.swing.JFrame {
             return;
         } else {
             tenPhong = tbl_phong.getValueAt(vitri, 1).toString();
-            GUI_phieuThue frm=new GUI_phieuThue();
+            GUI_phieuThue frm=new GUI_phieuThue(tenPhong);
             frm.setVisible(true);
         }
         }
     }//GEN-LAST:event_txt_thueActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         int vitri = tbl_phong.getSelectedRow();
-      trangthai = tbl_phong.getValueAt(vitri, 2).toString();
-        if (trangthai.equals("Còn trống")) {
-            thongbao.thongbao("Phòng chưa thuê", "thông báo");
-            return;
-        } else {
-            tenPhong = tbl_phong.getValueAt(vitri, 1).toString();
-            GUI_phieuThue frm=new GUI_phieuThue();
-            frm.setVisible(true);
-        }
+         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

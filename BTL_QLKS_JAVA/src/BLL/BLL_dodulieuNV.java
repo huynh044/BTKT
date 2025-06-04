@@ -22,7 +22,7 @@ public class BLL_dodulieuNV {
     public static void dodulieuNV(JTable tbl) {
         DefaultTableModel tblModel = (DefaultTableModel) tbl.getModel();
         tblModel.setRowCount(0);
-        Object obj[] = new Object[10];
+        Object obj[] = new Object[11];
         ResultSet rs = DAO.DAO_nhanvien.laydulieuNV();
         try {
             while(rs.next()){
@@ -36,6 +36,7 @@ public class BLL_dodulieuNV {
                 obj[7]=rs.getInt("luong");
                 obj[8]=rs.getString("diachi");
                 obj[9]=rs.getString("ghichu");
+                obj[10] = rs.getString("BangCap");
                 tblModel.addRow(obj);
             }
         } catch (SQLException ex) {
@@ -45,7 +46,7 @@ public class BLL_dodulieuNV {
     public static void dodulieuNV_Timkiem(JTable tbl,String tuKhoa){
             DefaultTableModel tblModel = (DefaultTableModel) tbl.getModel();
         tblModel.setRowCount(0);
-        Object obj[] = new Object[10];
+        Object obj[] = new Object[11];
         ResultSet rs = DAO.DAO_nhanvien.timkiemNV(tuKhoa);
         try {
             while(rs.next()){
@@ -59,6 +60,7 @@ public class BLL_dodulieuNV {
                 obj[7]=rs.getInt("luong");
                 obj[8]=rs.getString("diachi");
                 obj[9]=rs.getString("ghichu");
+                obj[10] = rs.getString("BangCap");
                 tblModel.addRow(obj);
             }
         } catch (SQLException ex) {
